@@ -1,6 +1,6 @@
 ---
 title: "final_project"
-author: "Jane Doe"
+author: "Anthony Franklin"
 date: "8/10/2018"
 output: html_document
 ---
