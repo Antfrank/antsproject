@@ -22,7 +22,6 @@ library(ggthemes)
 library(knitr)
 
 ## set working directory
-knitr::opts_knit$set(root.dir = '/cloud/project')
 ```
 
 ### The Data
@@ -59,13 +58,6 @@ atus.all <- atus.sum %>%
 ### Exploratory Analysis of Child Care Data
 
 ```{r initial-exploration}
-### Add Code Here
-install.packages('skimr')
-library(skimr)
-install.packages('janitor')
-library(janitor)
-
-
 
 ```
 
@@ -73,16 +65,12 @@ library(janitor)
 ```{r creating-childcare-var}
 atus.all <- atus.all %>% 
     mutate(CHILDCARE = t030101 + t030102 + t030103 + t030104 + t030105 + t030106 + t030108 + t030109 + t030110 + t030111 + t030112)
-
-
-
 ```
 
 ```{r childcare-density-plot}
 
-p <- ggplot(atus.all)+
+ggplot(atus.all)+
   geom_density(aes(CHILDCARE))
-p
              
 ```
 
@@ -91,6 +79,7 @@ p
 childcare <- atus.all %>%
 	group_by(TESEX) %>%
 	summarize(avg = mean(CHILDCARE))
+
 childcare
 
 
@@ -99,7 +88,7 @@ childcare
 
 ```{r replacing-na}
 ## replace -1 in the variable TRDPFTPT with NA.
-atus.all %>%
+atus.all <- atus.all %>%
   mutate(TRDPFTPT=na_if(TRDPFTPT,-1))
 
 ```
@@ -114,7 +103,7 @@ atus.all %>%
 ```{r reg-analysis}
 ## add your regression analysis code here
 regression <- lm(TRCHILDNUM ~ HEFAMINC, 
-               data=atus.all, 1)
+               data=atus.all)
 summary(regression)
 ```
 
@@ -143,19 +132,17 @@ atus.wide <- atus.all %>%
 ```
 
 ```{r wide-to-long}
-library(tidyr)
 atus.long <- atus.wide %>% 
-gather(ACTIVITY, MINS) 
-                     
-  # use code to convert the wide format to long.
+  gather(key = ACTIVITY, value = MINS, act01:act18) 
 ```
 
 ```{r age-activity}
-atus.all %>% 
-    group_by("ACTIVITY", TEAGE) %>% 
-    summarise(AVGMINS = mean("MINS")) %>% 
-    ggplot(data=age_activity, aes(x=AVGMINS, y= TEAGE) +
- geom_bar(stat="identity"))
+atus.long %>% 
+    group_by(ACTIVITY, TEAGE) %>% 
+    summarise(AVGMINS = mean(MINS)) %>% 
+    ggplot(aes(x=TEAGE, y= AVGMINS)) +
+             geom_point() +
+  facet_wrap(~ACTIVITY)
 
   
 ```
@@ -168,9 +155,6 @@ atus.long %>%
   ggplot(data = income_activity) +
   geom_point(aes(x = ACTIVITY, y = HEFAMINC), color = "dodgerblue") +
   geom_smooth(method = "lm", se= FALSE)
-  
-
-
 
   ## add the rest of the code here
 ```
