@@ -132,8 +132,10 @@ atus.wide <- atus.all %>%
 ```
 
 ```{r wide-to-long}
+library(tidyr)
 atus.long <- atus.wide %>% 
   gather(key = ACTIVITY, value = MINS, act01:act18) 
+
 ```
 
 ```{r age-activity}
